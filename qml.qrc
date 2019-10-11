@@ -1,0 +1,14 @@
+<RCC>
+    <qresource prefix="/">
+        <file>main.qml</file>
+        <file>home.qml</file>
+        <file>settings.qml</file>
+        <file>login.qml</file>
+        <file>qtquickcontrols2.conf</file>
+        <file>error.qml</file>
+        <file>theme/busyindicator-animation.webp</file>
+        <file>regpanel.qml</file>
+        <file>ctrlpanel.qml</file>
+        <file>regsuccess.qml</file>
+    </qresource>
+</RCC>
