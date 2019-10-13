@@ -11,5 +11,6 @@
         <file>ctrlpanel.qml</file>
         <file>regsuccess.qml</file>
         <file>icon/kis-ucp.svg</file>
+        <file>certs/rfid_ca.crt</file>
     </qresource>
 </RCC>

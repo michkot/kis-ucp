@@ -10,7 +10,7 @@ Reader::Reader(QObject *parent) : QObject(parent), mWaiting(false)
     instance = this;
 
     QSslConfiguration sslConfig = mReaderSocket.sslConfiguration();
-    const auto sslCas = QSslCertificate::fromPath("certs/*.crt", QSsl::Pem, QRegExp::Wildcard);
+    const auto sslCas = QSslCertificate::fromPath(":/certs/rfid_ca.crt", QSsl::Pem);
     sslConfig.setCaCertificates(sslCas);
     mReaderSocket.setSslConfiguration(sslConfig);
 
