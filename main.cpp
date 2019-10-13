@@ -19,6 +19,7 @@ int main(int argc, char *argv[])
     QCoreApplication::setApplicationName("KIS UCP");
 
     QGuiApplication app(argc, argv);
+    app.setWindowIcon(QIcon(":/icon/kis-ucp.svg"));
 
     // Settings needs to be constructed first so that the Settings::instance is valid
     Settings settings;

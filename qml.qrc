@@ -10,5 +10,6 @@
         <file>regpanel.qml</file>
         <file>ctrlpanel.qml</file>
         <file>regsuccess.qml</file>
+        <file>icon/kis-ucp.svg</file>
     </qresource>
 </RCC>
