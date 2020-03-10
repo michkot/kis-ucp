@@ -12,10 +12,10 @@ Page {
 
     GridLayout {
         anchors.fill: parent
-        anchors.rightMargin: 100
-        anchors.leftMargin: 100
-        anchors.bottomMargin: 100
-        anchors.topMargin: 100
+        anchors.rightMargin: 50
+        anchors.leftMargin: 50
+        anchors.bottomMargin: 50
+        anchors.topMargin: 50
 
         columns: 3
         columnSpacing: 15
