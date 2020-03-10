@@ -29,6 +29,7 @@ Page {
                 Layout.fillWidth: true
 
                 text: qsTr("Existing user login")
+                wrapMode: Text.WordWrap
                 font.bold: true
                 font.pointSize: 36
             }
@@ -59,6 +60,7 @@ Page {
                 Layout.fillWidth: true
 
                 text: qsTr("New user registration")
+                wrapMode: Text.WordWrap
                 font.bold: true
                 font.pointSize: 36
             }
