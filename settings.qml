@@ -109,7 +109,7 @@ Page {
 
             id: rfidReaderUrlField
             text: settings.rfidReaderUrl
-            validator: RegExpValidator { regExp: /^(?:wss?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/ }
+            validator: RegExpValidator { regExp: /^(?:wss?:\/\/)?[\w.-]+(?:\.[\w\.-]+)*[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/ }
             color: acceptableInput ? "black" : "red"
             selectByMouse: true
 
