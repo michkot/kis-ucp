@@ -3,19 +3,26 @@
 
 #include <cstdint>
 
-struct ProtocolPacket {
+
+#ifdef _MSC_VER
+#define PACK( __Declaration__ ) __pragma( pack(push, 1) ) __Declaration__ __pragma( pack(pop))
+#else
+#define PACK( __Declaration__ ) __Declaration__ __attribute__((__packed__))
+#endif
+
+PACK(struct ProtocolPacket {
     uint8_t messageType;
     uint8_t checkByteOne;
     uint8_t data[32];
     uint8_t checkByteTwo;
-} __attribute__((packed));
+});
 
-struct IdData {
+PACK(struct IdData {
     uint8_t uid_length;
     uint8_t uid[7];
     uint8_t padding[8];
     uint8_t card0[16];
-} __attribute__((packed));
+});
 
 static const uint8_t kProtocolCheckByteOne = 0x6E;
 static const uint8_t kProtocolCheckByteTwo = 0xE6;
