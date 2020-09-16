@@ -80,7 +80,7 @@ QString Controller::timeoutValue()
 
 QUrl Controller::loginWayfUrl()
 {
-    return mEduidLoginUrl;
+    return mEduidWayfUrl;
 }
 
 QUrl Controller::loginCaptureUrl()
@@ -124,10 +124,10 @@ void Controller::loginComplete()
 {
     // based on the requested page (login vs register) we construct the corresponding object
     if (mRegisterOnly) {
-        mUser = new NewUser(mEduidSessionId);
+        mUser = new NewUser(mEduidSession);
         emit replaceWithUserProperty("qrc:/regpanel.qml", mUser);
     } else {
-        mUser = new ExistingUser(mEduidSessionId);
+        mUser = new ExistingUser(mEduidSession);
         emit replaceWithUserProperty("qrc:/ctrlpanel.qml", mUser);
 
         // In this case, the session timer loses its importance
@@ -236,8 +236,8 @@ void Controller::eduidLoginUrlReplyReceived()
     }
 
     // set the required state
-    mEduidSessionId = reply["session_id"].toString();
-    mEduidLoginUrl = reply["wayf_url"].toString();
+    mEduidSession = reply["session"].toString();
+    mEduidWayfUrl = reply["wayf_url"].toString();
     emit loginWayfUrlChanged();
 
     // set up the timer

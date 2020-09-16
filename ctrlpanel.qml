@@ -60,6 +60,32 @@ Page {
         Label {
             Layout.alignment: Qt.AlignRight
 
+            text: qsTr("Membership")
+            horizontalAlignment: Text.AlignRight
+        }
+        Text {
+            Layout.fillWidth: true
+            Layout.columnSpan: 2
+
+            text: user ? user.textMembership : ""
+        }
+
+        Label {
+            Layout.alignment: Qt.AlignRight
+
+            text: qsTr("Orders")
+            horizontalAlignment: Text.AlignRight
+        }
+        Text {
+            Layout.fillWidth: true
+            Layout.columnSpan: 2
+
+            text: user ? user.textOrders : ""
+        }
+
+        Label {
+            Layout.alignment: Qt.AlignRight
+
             text: qsTr("Contributions")
             horizontalAlignment: Text.AlignRight
         }
@@ -73,7 +99,7 @@ Page {
         Label {
             Layout.alignment: Qt.AlignRight
 
-            text: qsTr("Prestige")
+            text: qsTr("Available prestige")
             horizontalAlignment: Text.AlignRight
         }
         Text {

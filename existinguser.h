@@ -15,6 +15,8 @@ class ExistingUser : public User
     Q_PROPERTY(bool initialized READ initialized NOTIFY initializedChanged)
 
     Q_PROPERTY(QString textUser READ textUser NOTIFY userChanged)
+    Q_PROPERTY(QString textMembership READ textMembership NOTIFY userChanged)
+    Q_PROPERTY(QString textOrders READ textOrders NOTIFY userChanged)
     Q_PROPERTY(QString textContributions READ textContributions NOTIFY userChanged)
     Q_PROPERTY(QString textPrestige READ textPrestige NOTIFY userChanged)
     Q_PROPERTY(QString nickname READ nickname WRITE setNickname NOTIFY nicknameChanged)
@@ -36,6 +38,8 @@ public:
 
     bool initialized();
     QString textUser();
+    QString textMembership();
+    QString textOrders();
     QString textContributions();
     QString textPrestige();
     QString nickname();

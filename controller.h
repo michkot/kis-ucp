@@ -79,8 +79,8 @@ private:
     QNetworkAccessManager mNetwork;
     QNetworkReply* mEduidLoginUrlReply;
 
-    QUrl mEduidLoginUrl;
-    QString mEduidSessionId;
+    QUrl mEduidWayfUrl;
+    QString mEduidSession;
 
     QTimer mUpdateTimer;
     QTimer mEduidSessionTimer;

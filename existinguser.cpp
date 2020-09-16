@@ -2,10 +2,19 @@
 
 #include <QDateTime>
 #include <QJsonDocument>
+#include <QJsonArray>
 #include <QUrlQuery>
 
 #include "controller.h"
 #include "settings.h"
+
+template<typename LiteralType>
+static inline QByteArray encodeJsonLiteral(const LiteralType& value)
+{
+    return QJsonDocument(
+                    QJsonArray() << QJsonValue(value)
+                ).toJson(QJsonDocument::Compact).mid(1).chopped(1);
+}
 
 ExistingUser::ExistingUser(QString session, QObject *parent) : User(parent), mSession(session), mInitialized(false), mLoginReply(nullptr), mUserDataReply(nullptr)
 {
@@ -17,7 +26,7 @@ void ExistingUser::initialize()
 {
     QUrl requestUrl(Settings::instance->apiBaseUrl());
     requestUrl.setPath(requestUrl.path() + "/auth/eduid/login");
-    requestUrl.setQuery(QString("session_id=%1").arg(mSession));
+    requestUrl.setQuery(QString("session=%1").arg(mSession));
 
     if (mLoginReply) {
         mLoginReply->deleteLater();
@@ -43,14 +52,37 @@ QString ExistingUser::textUser()
     return tr("Logged in as %1 (%2)").arg(mUserData["name"].toString()).arg(mUserData["email"].toString());
 }
 
+QString ExistingUser::textMembership()
+{
+    if (mUserData["is_member"].toBool()) {
+        QDateTime expiration = QDateTime::fromString(mUserData["member_until"].toString(), Qt::ISODate).toLocalTime();
+        return tr("valid until %1").arg(expiration.toString());
+    } else {
+        if (mUserData["roles"].toArray().contains(QJsonValue("sympathizing_member"))) {
+            return tr("expried (make a contribution to regain membership)");
+        } else {
+            return tr("invalid (please contact an administrator for details)");
+        }
+    }
+}
+
+QString ExistingUser::textOrders()
+{
+    return tr("%1 CZK in the past 30 days\n%2 CZK in the past 365 days")
+            .arg(mUserData["orders"].toObject()["month"].toDouble(), 0, 'f', 2)
+            .arg(mUserData["orders"].toObject()["year"].toDouble(), 0, 'f', 2);
+}
+
 QString ExistingUser::textContributions()
 {
-    return tr("%1 CZK in the past 30 days").arg(mUserData["contribution_month"].toDouble(), 0, 'f', 2);
+    return tr("%1 CZK in the past 30 days\n%2 CZK in the past 365 days")
+            .arg(mUserData["contributions"].toObject()["month"].toDouble(), 0, 'f', 2)
+            .arg(mUserData["contributions"].toObject()["year"].toDouble(), 0, 'f', 2);
 }
 
 QString ExistingUser::textPrestige()
 {
-    return tr("%1 (available)/ %2 (collected)").arg(mUserData["prestige_available"].toDouble(), 0, 'f', 2).arg(mUserData["prestige_total"].toDouble(), 0, 'f', 2);
+    return QString("%1").arg(mUserData["prestige"].toDouble(), 0, 'f', 2);
 }
 
 QString ExistingUser::nickname()
@@ -70,8 +102,8 @@ QString ExistingUser::pin()
 
 bool ExistingUser::pinVisible()
 {
-    QString role = mUserData["role"].toString();
-    return role == "regular_member" || role == "manager" || role == "administrator";
+    return mUserData["roles"].toArray().contains(QJsonValue("regular_member")) ||
+            mUserData["roles"].toArray().contains(QJsonValue("operator"));
 }
 
 void ExistingUser::setNickname(QString newNickname)
@@ -83,13 +115,10 @@ void ExistingUser::setNickname(QString newNickname)
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
     request.setRawHeader("Authorization", QString("Bearer %1").arg(mAuthToken).toLatin1());
 
-    QJsonObject requestObject;
-    requestObject["nickname"] = newNickname;
-
     if (mUserDataReply) {
         mUserDataReply->deleteLater();
     }
-    mUserDataReply = Controller::instance->network().put(request, QJsonDocument(requestObject).toJson());
+    mUserDataReply = Controller::instance->network().put(request, encodeJsonLiteral(newNickname));
     connect(mUserDataReply, &QNetworkReply::finished, [this]{ updateReplyReceived(UpdateChoice::kNickname); });
 
     emit busyChanged();
@@ -104,13 +133,10 @@ void ExistingUser::setConsent(bool newConsentStatus)
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
     request.setRawHeader("Authorization", QString("Bearer %1").arg(mAuthToken).toLatin1());
 
-    QJsonObject requestObject;
-    requestObject["gamification_consent"] = newConsentStatus;
-
     if (mUserDataReply) {
         mUserDataReply->deleteLater();
     }
-    mUserDataReply = Controller::instance->network().put(request, QJsonDocument(requestObject).toJson());
+    mUserDataReply = Controller::instance->network().put(request, encodeJsonLiteral(newConsentStatus));
     connect(mUserDataReply, &QNetworkReply::finished, [this]{ updateReplyReceived(UpdateChoice::kConsent); });
 
     emit busyChanged();
@@ -125,13 +151,13 @@ void ExistingUser::setPin(QString newPin)
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
     request.setRawHeader("Authorization", QString("Bearer %1").arg(mAuthToken).toLatin1());
 
-    QJsonObject requestObject;
-    requestObject["pin"] = newPin;
-
     if (mUserDataReply) {
         mUserDataReply->deleteLater();
     }
-    mUserDataReply = Controller::instance->network().put(request, QJsonDocument(requestObject).toJson());
+    if (newPin.length())
+        mUserDataReply = Controller::instance->network().put(request, encodeJsonLiteral(newPin));
+    else
+        mUserDataReply = Controller::instance->network().put(request, encodeJsonLiteral(QJsonValue::Null));
     connect(mUserDataReply, &QNetworkReply::finished, [this]{ updateReplyReceived(UpdateChoice::kPin); });
 
     emit busyChanged();

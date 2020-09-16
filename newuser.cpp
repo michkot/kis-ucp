@@ -17,7 +17,7 @@ void NewUser::initialize()
 {
     QUrl requestUrl(Settings::instance->apiBaseUrl());
     requestUrl.setPath(requestUrl.path() + "/auth/eduid/register");
-    requestUrl.setQuery(QString("session_id=%1").arg(mSession));
+    requestUrl.setQuery(QString("session=%1").arg(mSession));
 
     if (mInfoReply) {
         mInfoReply->deleteLater();
@@ -96,7 +96,7 @@ void NewUser::submit()
     QUrl requestUrl(Settings::instance->apiBaseUrl());
     requestUrl.setPath(requestUrl.path() + "/auth/eduid/register");
     QUrlQuery urlQuery;
-    urlQuery.addQueryItem("session_id", mSession);
+    urlQuery.addQueryItem("session", mSession);
     requestUrl.setQuery(urlQuery);
 
     QNetworkRequest netRequest(requestUrl);
